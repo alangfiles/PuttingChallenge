@@ -1,0 +1,84 @@
+<html>
+<head>
+  <title>Alan Trevino's Putting Challenge</title>
+</head>
+<body onload="initialize();">
+    <canvas id="green" width="400" height="400"></canvas>
+    <br>
+    <button id="play" onclick="runSim()">Play</button>
+    <script>
+        //let's assume a 100x100 grid, with each pixel being a 4 inches.
+        //so the whole 33 feet x 33 feet   
+        //a hole is 4.5 inches wide
+        
+        var holeLocation;
+        var numPutts;
+        var ballLocation;
+        var distanceFromPin = 48;
+        var screenSize = [400,400];
+        var drawFrameRate = 1000/30; //30 frames per 1000 mili-second
+        //these the user can adjust
+        var puttStrengthVariability; //distance from hole
+        var puttAngleVariability; //degrees
+
+        var initialize = function(){
+            holeLocation = [Math.floor(screenSize[0]/2), Math.floor(screenSize[1]/2)]; //middle of screen
+            puttStrengthVariability = 1;
+            puttAngleVariability = 90;
+            numPutts = 0;
+
+            ballLocation = [Math.random()*screenSize[0],Math.random()*screenSize[1]];
+            var drawInterval;
+
+            drawInterval = setInterval(draw,drawFrameRate);
+        }
+
+        var runSim = function(){
+            var puttStrength = Math.random()*puttStrengthVariability;
+            var puttAngle = Math.random()*puttAngleVariability;
+            numPutts++;
+
+            var distanceToHole = 200;
+            var angleFromBallToHole = 15;
+
+            var distanceToMove = distanceToHole*puttStrength;
+            var distanceMoved = 0;
+            var puttMove = setInterval(function(){
+                if(distanceMoved < distanceToMove){
+                    ballLocation = [ballLocation[0]-1, ballLocation[1]+1];
+                }
+                distanceMoved++;
+            }, drawFrameRate/2);
+
+
+
+
+        }
+
+        var draw = function(){
+            var canvas = document.getElementById('green');
+            if (canvas.getContext) {
+                var ctx = canvas.getContext('2d');
+
+                //fill background
+                ctx.fillStyle = 'rgb(0, 200, 0)';
+                ctx.fillRect(0, 0, 400, 400);
+
+                //draw hole
+                ctx.fillStyle = 'rgb(0, 0, 0)';
+                ctx.beginPath();    
+                ctx.arc(holeLocation[0], holeLocation[1], 8, 0, 2*Math.PI)
+                ctx.fill();
+
+                //draw ball
+                ctx.beginPath();   
+                ctx.fillStyle = 'rgb(255, 255, 255)';
+                ctx.arc(ballLocation[0], ballLocation[1], 4, 0, 2*Math.PI)
+                ctx.fill();
+
+            }
+        }
+
+    </script>
+</body>
+</html>
